@@ -1,8 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, MapPin, ChevronDown } from 'lucide-react';
 
 const HomePage = () => {
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Simulate a network request for demo purposes
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Expanded categories based on your items.csv data
   const categories = [
     { name: 'Biryani', icon: '🍲' },
@@ -36,11 +47,15 @@ const HomePage = () => {
 
       {/* 2. Search Bar */}
       <div className="px-4 mb-8">
-        <div className="bg-white border border-gray-200 rounded-xl p-3 flex items-center space-x-3 shadow-sm">
+        <div
+          onClick={() => navigate('/search')}
+          className="bg-white border border-gray-200 rounded-xl p-3 flex items-center space-x-3 shadow-sm cursor-pointer"
+        >
           <Search size={18} className="text-red-500" />
-          <input 
-            className="bg-transparent outline-none text-sm w-full font-medium" 
-            placeholder="Search for 'Biryani', 'Mughlai' or 'Cakes'..." 
+          <input
+            className="bg-transparent outline-none text-sm w-full font-medium cursor-pointer pointer-events-none"
+            placeholder="Search for 'Biryani', 'Mughlai' or 'Cakes'..."
+            readOnly
           />
         </div>
       </div>
@@ -50,9 +65,9 @@ const HomePage = () => {
         <h3 className="font-bold text-gray-800 mb-4 text-[11px] uppercase tracking-[0.15em] opacity-60">What's on your mind?</h3>
         <div className="flex space-x-6 overflow-x-auto no-scrollbar mb-10 pb-2">
           {categories.map(c => (
-            <Link 
-              key={c.name} 
-              to={`/category/${c.name}`} 
+            <Link
+              key={c.name}
+              to={`/category/${c.name}`}
               className="flex-shrink-0 text-center group active:scale-95 transition-transform"
             >
               <div className="w-16 h-16 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-3xl shadow-sm">
@@ -67,31 +82,45 @@ const HomePage = () => {
       {/* 4. Top Restaurants Section */}
       <div className="px-4">
         <h3 className="font-bold text-gray-800 mb-4 text-[11px] uppercase tracking-[0.15em] opacity-60">Top Restaurants</h3>
-        
-        {/* Restaurant Card linking to ID 6317637 (Barbeque Nation from your CSV) */}
-        <Link 
-          to="/restaurant/6317637" 
-          className="block rounded-3xl border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-transform mb-6"
-        >
-          <div className="h-48 bg-gray-100 relative">
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-tighter">
-              35-40 mins • 5 km
-            </div>
-            <div className="w-full h-full bg-gradient-to-b from-transparent to-black/20"></div>
-          </div>
-          <div className="p-4 bg-white">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-black text-gray-800 tracking-tight">Barbeque Nation</span>
-              <div className="bg-green-700 text-white px-2 py-1 rounded-lg flex items-center space-x-1 shadow-sm">
-                <span className="text-xs font-bold">4.2</span>
-                <span className="text-[10px]">★</span>
+
+        {loading ? (
+          /* Skeleton Loader for Restaurant Card */
+          <div className="block rounded-3xl border border-gray-100 overflow-hidden shadow-sm mb-6 animate-pulse">
+            <div className="h-48 bg-gray-200"></div>
+            <div className="p-4 bg-white">
+              <div className="flex justify-between items-center mb-2">
+                <div className="h-6 bg-gray-200 rounded-md w-1/2"></div>
+                <div className="h-6 w-12 bg-gray-200 rounded-lg"></div>
               </div>
+              <div className="h-3 bg-gray-200 rounded-md w-3/4"></div>
             </div>
-            <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tight">
-              Mughlai • North Indian • ₹400 for two
-            </p>
           </div>
-        </Link>
+        ) : (
+          /* Actual Restaurant Card */
+          <Link
+            to="/restaurant/6317637"
+            className="block rounded-3xl border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-transform mb-6"
+          >
+            <div className="h-48 bg-gray-100 relative">
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-tighter">
+                35-40 mins • 5 km
+              </div>
+              <div className="w-full h-full bg-gradient-to-b from-transparent to-black/20"></div>
+            </div>
+            <div className="p-4 bg-white">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-black text-gray-800 tracking-tight">Barbeque Nation</span>
+                <div className="bg-green-700 text-white px-2 py-1 rounded-lg flex items-center space-x-1 shadow-sm">
+                  <span className="text-xs font-bold">4.2</span>
+                  <span className="text-[10px]">★</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tight">
+                Mughlai • North Indian • ₹400 for two
+              </p>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );

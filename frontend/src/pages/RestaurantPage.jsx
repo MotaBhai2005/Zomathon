@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import { Search, ChevronDown } from 'lucide-react';
 
 const RestaurantPage = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -29,7 +29,35 @@ const RestaurantPage = () => {
     setDrawerOpen(true);
   };
 
-  if (loading) return <div className="p-20 text-center font-bold text-gray-400">Loading Menu...</div>;
+  if (loading) {
+    return (
+      <div className="bg-white min-h-screen pb-40">
+        <div className="p-4 sticky top-0 bg-white z-40 border-b flex justify-between items-center">
+          <div className="h-6 w-24 bg-gray-200 rounded-md animate-pulse"></div>
+          <div className="h-6 w-6 bg-gray-200 rounded-full animate-pulse"></div>
+        </div>
+        <div className="p-4">
+          <div className="h-6 w-32 bg-gray-200 rounded-md mb-6 animate-pulse"></div>
+          {/* Render 5 skeleton menu items */}
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex justify-between items-start mb-8 animate-pulse">
+              <div className="flex-1 pr-4">
+                <div className="w-4 h-4 rounded-sm bg-gray-200 mb-2"></div>
+                <div className="h-5 bg-gray-200 rounded-md w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded-md w-1/4 mb-3"></div>
+                <div className="h-3 bg-gray-200 rounded-md w-full mb-1"></div>
+                <div className="h-3 bg-gray-200 rounded-md w-4/5"></div>
+              </div>
+              <div className="relative">
+                <div className="w-32 h-32 rounded-2xl bg-gray-200 shadow-sm"></div>
+                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-24 h-10 bg-gray-300 rounded-xl border border-gray-100 shadow-sm"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen pb-40">
