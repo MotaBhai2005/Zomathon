@@ -10,9 +10,9 @@ const DiningPage = ({ location }) => {
     // 1. Your 20 Local Assets List
     const localImages = [
         'Barbeque Nation', 'Bikanervala', 'Din Tai Fung', 'Empire Restaurant',
-        "Haldiram's", 'Hard Rock Cafe', 'Heat - Edsa Shangri-La', 
-        'Izakaya Kikufuji', "Karim's", 'The Little Breath', 'Nobu', 'Ooma', 
-        'Paradise Biryani', 'Punjab Grill', 'Sambo Kojin', 'Saravana Bhavan', 
+        "Haldiram's", 'Hard Rock Cafe', 'Heat - Edsa Shangri-La',
+        'Izakaya Kikufuji', "Karim's", 'The Little Breath', 'Nobu', 'Ooma',
+        'Paradise Biryani', 'Punjab Grill', 'Sambo Kojin', 'Saravana Bhavan',
         'Social', 'The Coffee Bean', 'Wildfire', 'Wow! Momo'
     ];
 
@@ -62,7 +62,7 @@ const DiningPage = ({ location }) => {
                     <Search size={18} className="text-red-500" />
                     <input className="bg-transparent outline-none text-sm w-full font-bold text-gray-700" placeholder={`Search dining in ${location}...`} />
                 </div>
-                
+
                 {/* Mixed in: Quick Filters from original version */}
                 <div className="flex space-x-3 overflow-x-auto no-scrollbar pb-2">
                     <button className="flex-shrink-0 flex items-center bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-500">
@@ -106,15 +106,15 @@ const DiningPage = ({ location }) => {
                     </div>
                 ) : restaurants.length > 0 ? (
                     restaurants.map((res) => (
-                        <div 
-                            key={res.restaurant_id} 
+                        <div
+                            key={res.restaurant_id}
                             onClick={() => navigate(`/restaurant/${res.restaurant_id}`)}
                             className="block rounded-[3rem] border border-gray-100 overflow-hidden shadow-sm mb-12 bg-white group cursor-pointer"
                         >
                             <div className="h-60 relative overflow-hidden">
-                                <img 
-                                    src={`/assets/restaurants/${res.restaurant_name?.trim()}.jpg`} 
-                                    alt={res.restaurant_name} 
+                                <img
+                                    src={`/assets/Restaurants/${res.restaurant_name?.replace(/\d+$/, '').trim()}.jpg`}
+                                    alt={res.restaurant_name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"; }}
                                 />

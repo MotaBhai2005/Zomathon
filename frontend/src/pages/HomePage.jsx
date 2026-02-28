@@ -114,11 +114,19 @@ const HomePage = ({ location = "Bhubaneswar" }) => {
               className="block rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-all mb-8 bg-white"
             >
               <div className="h-56 bg-gray-100 relative">
+                <img
+                  src={`/assets/Restaurants/${res.restaurant_name?.replace(/\d+$/, '').trim()}.jpg`}
+                  alt={res.restaurant_name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80";
+                  }}
+                />
                 <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-sm">
                   30-35 MINS
                 </div>
-                <div className="w-full h-full bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-5 text-white">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-4 left-5 text-white z-10">
                   <h4 className="text-xl font-black tracking-tight">{res.restaurant_name}</h4>
                   <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">{res.cuisine_type}</p>
                 </div>
