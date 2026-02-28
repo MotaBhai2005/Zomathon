@@ -1,0 +1,18 @@
+# Environments
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Data and Models
+*.csv
+*.npy
+*.pt
+*.h5
+
+# Temp files
+.~lock.*
+.DS_Store
