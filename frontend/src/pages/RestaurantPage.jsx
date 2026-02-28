@@ -11,7 +11,7 @@ const RestaurantPage = () => {
   const [loading, setLoading] = useState(true);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   // Destructure from your provided CartContext
   const { cart, totalAmount, addToCart } = useCart();
 
@@ -20,6 +20,34 @@ const RestaurantPage = () => {
 
   useEffect(() => {
     fetch(`http://localhost:8000/restaurant/${id}/menu`)
+      .catch((err) => {
+        console.warn("Backend offline, falling back menu data", err);
+        return {
+          json: () => [
+            {
+              item_id: "m1",
+              name: "Chicken Tikka Masala",
+              price: 350,
+              is_veg: false,
+              description: "Tender chicken pieces cooked in a rich, creamy tomato gravy with aromatic spices."
+            },
+            {
+              item_id: "m2",
+              name: "Paneer Butter Masala",
+              price: 280,
+              is_veg: true,
+              description: "Soft paneer cubes simmered in a smooth, buttery tomato sauce."
+            },
+            {
+              item_id: "m3",
+              name: "Garlic Naan",
+              price: 60,
+              is_veg: true,
+              description: "Freshly baked flatbread topped with minced garlic and butter."
+            }
+          ]
+        };
+      })
       .then(res => res.json())
       .then(data => {
         setMenuItems(data);
@@ -66,22 +94,22 @@ const RestaurantPage = () => {
       <div className="p-4">
         <h3 className="font-bold text-lg mb-4">Recommended</h3>
         {menuItems.map(item => (
-          <MenuItem 
-            key={item.item_id} 
-            item={item} 
-            onAdd={() => handleOpenDrawer(item)} 
+          <MenuItem
+            key={item.item_id}
+            item={item}
+            onAdd={() => handleOpenDrawer(item)}
           />
         ))}
       </div>
 
-      <AddOnDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => setDrawerOpen(false)} 
+      <AddOnDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setDrawerOpen(false)}
         item={selectedItem}
         onConfirm={(item) => {
-            // Pass the item and the restaurant ID to context
-            addToCart(item, id); 
-            setDrawerOpen(false);
+          // Pass the item and the restaurant ID to context
+          addToCart(item, id);
+          setDrawerOpen(false);
         }}
       />
 
@@ -90,7 +118,7 @@ const RestaurantPage = () => {
         <div className="fixed bottom-24 left-4 right-4 bg-[#E23744] text-white p-4 rounded-2xl flex justify-between items-center shadow-2xl z-50 animate-slide-up">
           <div className="flex flex-col text-left">
             <span className="text-[10px] font-black uppercase tracking-widest opacity-90">
-                {totalQty} ITEM{totalQty > 1 ? 'S' : ''} ADDED
+              {totalQty} ITEM{totalQty > 1 ? 'S' : ''} ADDED
             </span>
             <span className="text-lg font-black tracking-tighter">₹{totalAmount}</span>
           </div>
