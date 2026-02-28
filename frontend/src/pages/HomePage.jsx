@@ -44,8 +44,14 @@ const HomePage = ({ location = "Bhubaneswar" }) => {
     Promise.all([fetchCats, fetchRes]).then(([catData, resData]) => {
       // Ensure "Street Food" is in the list even if CSV is primarily "Mughlai/Chinese"
       const finalCats = catData.includes("Street Food") ? catData : ["Street Food", ...catData];
+
+      // Deduplicate restaurants based on ID (items.csv has multiple rows per restaurant)
+      const uniqueRestaurants = Array.from(
+        new Map(resData.map(res => [res.restaurant_id, res])).values()
+      );
+
       setCategories(finalCats);
-      setRestaurants(resData);
+      setRestaurants(uniqueRestaurants);
       setLoading(false);
     });
   }, [location]);
@@ -101,9 +107,9 @@ const HomePage = ({ location = "Bhubaneswar" }) => {
             {[1, 2].map(i => <div key={i} className="h-64 bg-gray-50 rounded-3xl animate-pulse" />)}
           </div>
         ) : restaurants && restaurants.length > 0 ? (
-          restaurants.map((res) => (
+          restaurants.map((res, index) => (
             <Link
-              key={res.restaurant_id}
+              key={`${res.restaurant_id}-${index}`}
               to={`/restaurant/${res.restaurant_id}`}
               className="block rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-all mb-8 bg-white"
             >
