@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom App Overrides */
+body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+  @apply bg-white;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
