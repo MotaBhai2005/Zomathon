@@ -1,119 +1,125 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Star, Clock, ChevronRight } from 'lucide-react';
+import { Search, MapPin, ChevronDown } from 'lucide-react';
 
-const HomePage = ({ location }) => {
-  const [restaurants, setRestaurants] = useState([]);
-  const [categories, setCategories] = useState([]);
+const HomePage = () => {
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Map of category names to Emojis (Fallback to 🍽️ if not found)
-  const iconMap = {
-    "Biryani": "🍲", "Pizza": "🍕", "Burger": "🍔", "Drink": "🥤", 
-    "Dessert": "🍨", "Cake": "🍰", "Thali": "🍱", "Main": "🍛", 
-    "Street Food": "🍢", "Chinese": "🥢", "South Indian": "🥞"
-  };
-
   useEffect(() => {
-    setLoading(true);
-    // 1. Fetch Categories available in CSV
-    const fetchCats = fetch('http://localhost:8000/categories/available').then(res => res.json());
-    // 2. Fetch Restaurants in current location
-    const fetchRes = fetch(`http://localhost:8000/restaurants/location/${location}`).then(res => res.json());
-
-    Promise.all([fetchCats, fetchRes]).then(([catData, resData]) => {
-      setCategories(catData);
-      setRestaurants(resData);
+    // Simulate a network request for demo purposes
+    const timer = setTimeout(() => {
       setLoading(false);
-    });
-  }, [location]);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) navigate(`/category/${searchQuery.toLowerCase()}`);
-  };
+  // Expanded categories based on your items.csv data
+  const categories = [
+    { name: 'Biryani', icon: '🍲' },
+    { name: 'Pizza', icon: '🍕' },
+    { name: 'Mughlai', icon: '🍛' },
+    { name: 'Dosa', icon: '🥞' },
+    { name: 'Paneer', icon: '🧀' },
+    { name: 'Chicken', icon: '🍗' },
+    { name: 'Burgers', icon: '🍔' },
+    { name: 'Thali', icon: '🍱' },
+    { name: 'Cakes', icon: '🍰' },
+    { name: 'Dessert', icon: '🍨' },
+    { name: 'Drinks', icon: '🥤' },
+  ];
 
   return (
-    <div className="bg-white min-h-screen pb-24 font-sans">
-      {/* 1. Search Bar */}
-      <div className="px-4 mb-8 mt-4">
-        <form onSubmit={handleSearch} className="bg-white border border-gray-100 rounded-2xl p-3 flex items-center space-x-3 shadow-sm focus-within:ring-2 focus-within:ring-red-500/10 transition-all">
-          <Search size={18} className="text-red-500" />
-          <input 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent outline-none text-sm w-full font-bold text-gray-700" 
-            placeholder={`Search Street Food or Biryani in ${location}...`} 
-          />
-        </form>
+    <div className="bg-white min-h-screen pb-24">
+      {/* 1. Location Header - Bhubaneswar Context */}
+      <div className="px-4 pt-6 pb-4">
+        <div className="flex items-center space-x-2">
+          <MapPin size={20} className="text-red-500 fill-red-500" />
+          <div className="flex flex-col text-left">
+            <div className="flex items-center">
+              <span className="text-xs font-black uppercase tracking-tight">Home</span>
+              <ChevronDown size={14} className="ml-1 text-gray-400" />
+            </div>
+            <span className="text-[10px] text-gray-500 truncate w-40">Bhubaneswar, Odisha, India</span>
+          </div>
+        </div>
       </div>
 
-      {/* 2. Dynamic Mindful Categories (From CSV) */}
-      <div className="px-4 mb-10">
-        <h3 className="font-black text-gray-400 mb-5 text-[10px] uppercase tracking-widest">Inspiration for your order</h3>
-        <div className="flex space-x-6 overflow-x-auto no-scrollbar pb-2">
-          {categories.map(cat => (
-            <Link key={cat} to={`/category/${cat.toLowerCase()}`} className="flex-shrink-0 text-center group active:scale-95 transition-all">
-              <div className="w-16 h-16 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-3xl shadow-sm group-hover:bg-white group-hover:shadow-md transition-all">
-                {iconMap[cat] || "🍽️"}
+      {/* 2. Search Bar */}
+      <div className="px-4 mb-8">
+        <div
+          onClick={() => navigate('/search')}
+          className="bg-white border border-gray-200 rounded-xl p-3 flex items-center space-x-3 shadow-sm cursor-pointer"
+        >
+          <Search size={18} className="text-red-500" />
+          <input
+            className="bg-transparent outline-none text-sm w-full font-medium cursor-pointer pointer-events-none"
+            placeholder="Search for 'Biryani', 'Mughlai' or 'Cakes'..."
+            readOnly
+          />
+        </div>
+      </div>
+
+      {/* 3. Mindful Categories - Now Dynamic & Responsive */}
+      <div className="px-4">
+        <h3 className="font-bold text-gray-800 mb-4 text-[11px] uppercase tracking-[0.15em] opacity-60">What's on your mind?</h3>
+        <div className="flex space-x-6 overflow-x-auto no-scrollbar mb-10 pb-2">
+          {categories.map(c => (
+            <Link
+              key={c.name}
+              to={`/category/${c.name}`}
+              className="flex-shrink-0 text-center group active:scale-95 transition-transform"
+            >
+              <div className="w-16 h-16 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-3xl shadow-sm">
+                {c.icon}
               </div>
-              <p className="text-[10px] font-black text-gray-500 mt-3">{cat}</p>
+              <p className="text-[10px] font-bold text-gray-600 mt-2">{c.name}</p>
             </Link>
           ))}
         </div>
       </div>
 
-      {/* 3. Restaurant Listing */}
+      {/* 4. Top Restaurants Section */}
       <div className="px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-black text-gray-800 text-lg tracking-tight">
-            Explore restaurants in <span className="text-red-500">{location}</span>
-          </h3>
-        </div>
+        <h3 className="font-bold text-gray-800 mb-4 text-[11px] uppercase tracking-[0.15em] opacity-60">Top Restaurants</h3>
 
         {loading ? (
-          <div className="space-y-6">
-            {[1, 2].map(i => <div key={i} className="h-64 bg-gray-50 rounded-3xl animate-pulse" />)}
+          /* Skeleton Loader for Restaurant Card */
+          <div className="block rounded-3xl border border-gray-100 overflow-hidden shadow-sm mb-6 animate-pulse">
+            <div className="h-48 bg-gray-200"></div>
+            <div className="p-4 bg-white">
+              <div className="flex justify-between items-center mb-2">
+                <div className="h-6 bg-gray-200 rounded-md w-1/2"></div>
+                <div className="h-6 w-12 bg-gray-200 rounded-lg"></div>
+              </div>
+              <div className="h-3 bg-gray-200 rounded-md w-3/4"></div>
+            </div>
           </div>
-        ) : restaurants.length > 0 ? (
-          restaurants.map((res) => (
-            <Link 
-              key={res.restaurant_id} 
-              to={`/restaurant/${res.restaurant_id}`} 
-              className="block rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-all mb-8 bg-white"
-            >
-              {/* Card Image area */}
-              <div className="h-56 bg-gray-100 relative">
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-sm">
-                  30-35 MINS
-                </div>
-                <div className="w-full h-full bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                <div className="absolute bottom-4 left-5 text-white">
-                  <h4 className="text-xl font-black tracking-tight">{res.restaurant_name}</h4>
-                  <p className="text-[10px] font-bold opacity-80 uppercase tracking-widest">{res.cuisine_type}</p>
-                </div>
-                <div className="absolute bottom-4 right-5 bg-green-700 text-white px-2 py-1 rounded-lg flex items-center space-x-1 font-black text-xs">
-                  <span>4.1</span> <Star size={10} fill="white" />
-                </div>
-              </div>
-
-              {/* Card Details */}
-              <div className="p-5 border-t border-gray-50 flex items-center justify-between">
-                <div className="flex items-center text-[10px] text-gray-400 font-bold uppercase tracking-tight">
-                  <Clock size={12} className="mr-1 text-gray-300" />
-                  FREE DELIVERY ON ORDERS ABOVE ₹199
-                </div>
-                <ChevronRight size={16} className="text-gray-300" />
-              </div>
-            </Link>
-          ))
         ) : (
-          <div className="py-20 text-center border-2 border-dashed border-gray-100 rounded-[2rem]">
-            <p className="text-gray-400 font-black text-xs uppercase tracking-widest">No restaurants found in {location}</p>
-            <p className="text-[10px] text-gray-300 mt-2 uppercase">Try changing your location above</p>
-          </div>
+          /* Actual Restaurant Card */
+          <Link
+            to="/restaurant/6317637"
+            className="block rounded-3xl border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-transform mb-6"
+          >
+            <div className="h-48 bg-gray-100 relative">
+              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[8px] font-black uppercase tracking-tighter">
+                35-40 mins • 5 km
+              </div>
+              <div className="w-full h-full bg-gradient-to-b from-transparent to-black/20"></div>
+            </div>
+            <div className="p-4 bg-white">
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-black text-gray-800 tracking-tight">Barbeque Nation</span>
+                <div className="bg-green-700 text-white px-2 py-1 rounded-lg flex items-center space-x-1 shadow-sm">
+                  <span className="text-xs font-bold">4.2</span>
+                  <span className="text-[10px]">★</span>
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tight">
+                Mughlai • North Indian • ₹400 for two
+              </p>
+            </div>
+          </Link>
         )}
       </div>
     </div>
