@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, ChevronRight, ShoppingBag } from 'lucide-react';
 
 const OrderPage = () => {
-  const { cart, totalAmount, addToCart, removeFromCart, activeRestaurantId } = useCart();
+  const { cart, totalAmount, addToCart, removeFromCart, activeRestaurantId, clearCart } = useCart();
   const [recs, setRecs] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -42,10 +42,16 @@ const OrderPage = () => {
     );
   }
 
+  const handlePlaceOrder = () => {
+    // Navigate to success and clear cart
+    window.location.href = '/success';
+    // Optional: clearCart();
+  };
+
   return (
     <div className="pt-16 p-4 pb-44 bg-gray-50 min-h-screen font-sans">
-      <div className="flex items-center space-x-2 mb-6">
-         <h2 className="text-2xl font-black tracking-tight text-gray-800">Review Order</h2>
+      <div className="flex items-center space-x-2 mb-6 text-left">
+         <h2 className="text-2xl font-black tracking-tight text-gray-800 uppercase">Review Order</h2>
          <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">Checkout</span>
       </div>
       
@@ -55,7 +61,7 @@ const OrderPage = () => {
           <div key={item.item_id} className="flex justify-between items-center py-5 border-b border-gray-50 last:border-0">
             <div className="flex flex-col text-left">
               <span className="text-sm font-black text-gray-800 leading-tight">{item.name}</span>
-              <span className="text-[10px] text-gray-400 font-bold mt-1 uppercase">₹{item.price} per unit</span>
+              <span className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tight">₹{item.price} per unit</span>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -65,7 +71,7 @@ const OrderPage = () => {
                   <span className="text-xs font-black px-2 text-gray-700 w-4 text-center">{item.qty}</span>
                   <button onClick={() => addToCart(item, activeRestaurantId)} className="text-red-500 p-1 active:scale-125 transition-transform"><Plus size={14} strokeWidth={3}/></button>
                </div>
-               <span className="text-sm font-black text-gray-700 w-16 text-right">₹{item.price * item.qty}</span>
+               <span className="text-sm font-black text-gray-700 w-16 text-right font-mono">₹{item.price * item.qty}</span>
             </div>
           </div>
         ))}
@@ -91,8 +97,8 @@ const OrderPage = () => {
       <div className="mt-10">
         <div className="flex justify-between items-end mb-4 px-1">
           <div className="text-left">
-            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">You might also like</h4>
-            <p className="text-[9px] text-red-500 font-bold italic">Smart Suggestions</p>
+            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Complete Your Meal</h4>
+            <p className="text-[9px] text-red-500 font-bold italic">Smart Suggestions based on {cart[cart.length-1]?.name}</p>
           </div>
           {loading && <div className="w-3 h-3 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>}
         </div>
@@ -105,6 +111,7 @@ const OrderPage = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
+                whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 w-40 bg-white border border-gray-100 p-4 rounded-[2rem] shadow-sm text-left"
               >
                 <div className="h-28 bg-gray-50 rounded-2xl mb-3 flex items-center justify-center text-3xl opacity-60">
@@ -126,10 +133,13 @@ const OrderPage = () => {
 
       {/* 4. Sticky Checkout Bar */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-gray-50 z-50">
-        <button className="w-full bg-[#E23744] text-white py-4 rounded-[1.5rem] font-black flex justify-between px-8 shadow-2xl shadow-red-200 active:scale-[0.98] transition-transform">
+        <button 
+          onClick={handlePlaceOrder}
+          className="w-full bg-[#E23744] text-white py-4 rounded-[1.5rem] font-black flex justify-between px-8 shadow-2xl shadow-red-200 active:scale-[0.98] transition-transform"
+        >
           <div className="flex flex-col items-start">
-            <span className="text-[10px] uppercase opacity-70 font-black tracking-widest">Total Payable</span>
-            <span className="text-lg font-black tracking-tighter">₹{totalPayable}</span>
+            <span className="text-[10px] uppercase opacity-70 font-black tracking-widest leading-none">Total Payable</span>
+            <span className="text-xl font-black tracking-tighter mt-1">₹{totalPayable}</span>
           </div>
           <div className="flex items-center text-sm uppercase tracking-tighter">
             Place Order <ChevronRight size={20} className="ml-1" />

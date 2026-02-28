@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import RestaurantPage from './pages/RestaurantPage';
@@ -6,36 +6,32 @@ import OrderPage from './pages/OrderPage';
 import CategoryPage from './pages/CategoryPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SearchPage from './pages/SearchPage';
+import CheckoutPage from './pages/CheckoutPage';
+import DiningPage from './pages/DiningPage';
+import SuccessPage from './pages/SuccessPage'; // New Success Page
 import MainLayout from './components/MainLayout';
 
 function App() {
-  const [cart, setCart] = useState([]);
-
-  const addToCart = (item) => {
-    setCart((prevCart) => {
-      // Check if item already exists to increment quantity
-      const existingItem = prevCart.find((i) => i.item_id === item.item_id);
-      if (existingItem) {
-        return prevCart.map((i) =>
-          i.item_id === item.item_id ? { ...i, quantity: i.quantity + 1 } : i
-        );
-      }
-      return [...prevCart, { ...item, quantity: 1 }];
-    });
-  };
+  // REMOVED: local cart state. We now use CartContext globally.
 
   return (
     <Routes>
-      {/* Pass cart data to MainLayout to show the bottom "View Cart" bar */}
-      <Route element={<MainLayout cart={cart} />}>
+      {/* 1. Routes inside MainLayout (Shared Header/BottomNav) */}
+      <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
-        {/* Pass addToCart to pages that have "Add" buttons */}
-        <Route path="/restaurant/:id" element={<RestaurantPage addToCart={addToCart} />} />
-        <Route path="/category/:categoryName" element={<CategoryPage addToCart={addToCart} />} />
-        <Route path="/search" element={<SearchPage addToCart={addToCart} />} />
-        <Route path="/order" element={<OrderPage cart={cart} />} />
+        <Route path="/restaurant/:id" element={<RestaurantPage />} />
+        <Route path="/category/:categoryName" element={<CategoryPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/dining" element={<DiningPage />} />
+        <Route path="/order" element={<OrderPage />} />
+        
+        {/* Catch-all Route inside layout */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>
+
+      {/* 2. Full-screen Routes (No Header/BottomNav) */}
+      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/success" element={<SuccessPage />} />
     </Routes>
   );
 }
