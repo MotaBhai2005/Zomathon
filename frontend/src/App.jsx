@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import RestaurantPage from './pages/RestaurantPage';
@@ -9,17 +9,31 @@ import SearchPage from './pages/SearchPage';
 import MainLayout from './components/MainLayout';
 
 function App() {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (item) => {
+    setCart((prevCart) => {
+      // Check if item already exists to increment quantity
+      const existingItem = prevCart.find((i) => i.item_id === item.item_id);
+      if (existingItem) {
+        return prevCart.map((i) =>
+          i.item_id === item.item_id ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      }
+      return [...prevCart, { ...item, quantity: 1 }];
+    });
+  };
+
   return (
     <Routes>
-      <Route element={<MainLayout />}>
+      {/* Pass cart data to MainLayout to show the bottom "View Cart" bar */}
+      <Route element={<MainLayout cart={cart} />}>
         <Route path="/" element={<HomePage />} />
-        <Route path="/restaurant/:id" element={<RestaurantPage />} />
-        <Route path="/order" element={<OrderPage />} />
-        {/* REGISTER THE MISSING ROUTE HERE */}
-        <Route path="/category/:categoryName" element={<CategoryPage />} />
-        {/* Search Route */}
-        <Route path="/search" element={<SearchPage />} />
-        {/* Catch-all Not Found Route */}
+        {/* Pass addToCart to pages that have "Add" buttons */}
+        <Route path="/restaurant/:id" element={<RestaurantPage addToCart={addToCart} />} />
+        <Route path="/category/:categoryName" element={<CategoryPage addToCart={addToCart} />} />
+        <Route path="/search" element={<SearchPage addToCart={addToCart} />} />
+        <Route path="/order" element={<OrderPage cart={cart} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
