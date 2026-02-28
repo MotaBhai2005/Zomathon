@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, MapPin, Star, Clock, ChevronRight } from 'lucide-react';
 
-const HomePage = ({ location }) => {
+const HomePage = ({ location = "Bhubaneswar" }) => {
   const [restaurants, setRestaurants] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,8 +20,13 @@ const HomePage = ({ location }) => {
 
   useEffect(() => {
     setLoading(true);
-    const fetchCats = fetch('http://localhost:8000/categories/available').then(res => res.json());
-    const fetchRes = fetch(`http://localhost:8000/restaurants/location/${location}`).then(res => res.json());
+    const fetchCats = fetch('http://localhost:8000/categories/available')
+      .then(res => res.json())
+      .catch(() => ["Biryani", "Pizza", "Mughlai", "Dosa", "Paneer", "Chicken", "Burgers", "Thali", "Cakes", "Dessert"]);
+
+    const fetchRes = fetch(`http://localhost:8000/restaurants/location/${location}`)
+      .then(res => res.json())
+      .catch(() => []);
 
     Promise.all([fetchCats, fetchRes]).then(([catData, resData]) => {
       // Ensure "Street Food" is in the list even if CSV is primarily "Mughlai/Chinese"
@@ -42,11 +47,11 @@ const HomePage = ({ location }) => {
       <div className="px-4 mb-8 mt-4">
         <form onSubmit={handleSearch} className="bg-white border border-gray-100 rounded-2xl p-3 flex items-center space-x-3 shadow-sm">
           <Search size={18} className="text-red-500" />
-          <input 
+          <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent outline-none text-sm w-full font-bold text-gray-700" 
-            placeholder={`Search Street Food or Biryani in ${location}...`} 
+            className="bg-transparent outline-none text-sm w-full font-bold text-gray-700"
+            placeholder={`Search Street Food or Biryani in ${location}...`}
           />
         </form>
       </div>
@@ -54,13 +59,13 @@ const HomePage = ({ location }) => {
       {/* --- CATEGORIES SECTION: FIX FOR CUT-OFF --- */}
       <div className="mb-10">
         <h3 className="px-4 font-black text-gray-400 mb-5 text-[10px] uppercase tracking-widest">Inspiration for your order</h3>
-        
+
         {/* Added overflow-x-auto, no-scrollbar, and extra padding-right to prevent cutoff */}
         <div className="flex space-x-6 overflow-x-auto no-scrollbar px-4 pb-4">
           {categories.map(cat => (
-            <Link 
-              key={cat} 
-              to={`/category/${cat.toLowerCase()}`} 
+            <Link
+              key={cat}
+              to={`/category/${cat.toLowerCase()}`}
               className="flex-shrink-0 text-center group active:scale-95 transition-all min-w-[64px]"
             >
               <div className="w-16 h-16 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-3xl shadow-sm group-hover:bg-white group-hover:shadow-md transition-all">
@@ -82,11 +87,11 @@ const HomePage = ({ location }) => {
           <div className="space-y-6">
             {[1, 2].map(i => <div key={i} className="h-64 bg-gray-50 rounded-3xl animate-pulse" />)}
           </div>
-        ) : (
+        ) : restaurants && restaurants.length > 0 ? (
           restaurants.map((res) => (
-            <Link 
-              key={res.restaurant_id} 
-              to={`/restaurant/${res.restaurant_id}`} 
+            <Link
+              key={res.restaurant_id}
+              to={`/restaurant/${res.restaurant_id}`}
               className="block rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm active:scale-[0.98] transition-all mb-8 bg-white"
             >
               <div className="h-56 bg-gray-100 relative">
@@ -108,6 +113,12 @@ const HomePage = ({ location }) => {
               </div>
             </Link>
           ))
+        ) : (
+          <div className="py-10 text-center bg-gray-50 rounded-[2rem] border border-gray-100 mt-4 mx-2">
+            <div className="text-4xl mb-3">🍽️</div>
+            <p className="text-sm font-bold text-gray-800">No restaurants found</p>
+            <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-black">Backend Connection Refused</p>
+          </div>
         )}
       </div>
     </div>
