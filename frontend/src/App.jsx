@@ -6,6 +6,8 @@ import OrderPage from './pages/OrderPage';
 import CategoryPage from './pages/CategoryPage';
 import NotFoundPage from './pages/NotFoundPage';
 import SearchPage from './pages/SearchPage';
+import CheckoutPage from './pages/CheckoutPage';
+import DiningPage from './pages/DiningPage';
 import MainLayout from './components/MainLayout';
 
 function App() {
@@ -19,9 +21,14 @@ function App() {
         <Route path="/category/:categoryName" element={<CategoryPage />} />
         {/* Search Route */}
         <Route path="/search" element={<SearchPage />} />
+        {/* Dining Route */}
+        <Route path="/dining" element={<DiningPage />} />
         {/* Catch-all Not Found Route */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>
+
+      {/* Routes outside of MainLayout (no Header/BottomNav) */}
+      <Route path="/checkout" element={<CheckoutPage />} />
     </Routes>
   );
 }

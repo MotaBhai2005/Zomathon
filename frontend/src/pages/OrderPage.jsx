@@ -13,7 +13,7 @@ const OrderPage = () => {
       setLoading(true);
       // Trigger 64D similarity based on the last item added to the cart
       const lastItem = cart[cart.length - 1];
-      
+
       fetch(`http://localhost:8000/recommend/${lastItem.item_id}`)
         .then(res => {
           if (!res.ok) throw new Error('Backend Connection Refused');
@@ -43,7 +43,7 @@ const OrderPage = () => {
   return (
     <div className="pt-16 p-4 pb-44 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-black mb-6 tracking-tight">My Cart</h2>
-      
+
       {/* 1. Active Cart Items */}
       <div className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 mb-8">
         {cart.map(item => (
@@ -70,12 +70,12 @@ const OrderPage = () => {
         <div className="flex overflow-x-auto space-x-4 no-scrollbar pb-4">
           <AnimatePresence>
             {recs.map((item, index) => (
-              <motion.div 
-                key={item.item_id} 
+              <motion.div
+                key={item.item_id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
-                whileTap={{scale: 0.95}} 
+                whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 w-36 bg-white border border-gray-100 p-3 rounded-2xl shadow-sm"
               >
                 <div className="h-24 bg-gray-50 rounded-xl mb-3 flex items-center justify-center text-2xl opacity-50">
@@ -83,7 +83,7 @@ const OrderPage = () => {
                 </div>
                 <p className="text-[10px] font-bold text-gray-800 truncate leading-tight">{item.name}</p>
                 <p className="text-[10px] text-red-500 font-black mt-1">₹{item.price}</p>
-                <button 
+                <button
                   onClick={() => addToCart(item)}
                   className="mt-3 w-full text-[9px] border border-red-100 text-red-500 py-1.5 rounded-lg font-black uppercase hover:bg-red-50 transition-colors"
                 >
@@ -95,9 +95,17 @@ const OrderPage = () => {
         </div>
       </div>
 
-      {/* 3. Sticky Checkout Bar */}
+  /* 3. Sticky Checkout Bar */
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 z-50">
-        <button className="w-full bg-[#E23744] text-white py-4 rounded-2xl font-black flex justify-between px-8 shadow-2xl shadow-red-200 active:scale-[0.98] transition-transform">
+        <button
+          onClick={() => {
+            import('react-router-dom').then(({ useNavigate }) => {
+              // Using window.location.href as a quick workaround since useNavigate hook violation won't work inside callback
+              window.location.href = '/checkout';
+            });
+          }}
+          className="w-full bg-[#E23744] text-white py-4 rounded-2xl font-black flex justify-between px-8 shadow-2xl shadow-red-200 active:scale-[0.98] transition-transform"
+        >
           <span className="text-sm tracking-tight uppercase">Place Order</span>
           <span className="text-sm">₹{totalAmount + 40} <span className="ml-1 opacity-60">→</span></span>
         </button>
