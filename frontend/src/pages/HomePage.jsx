@@ -26,7 +26,20 @@ const HomePage = ({ location = "Bhubaneswar" }) => {
 
     const fetchRes = fetch(`http://localhost:8000/restaurants/location/${location}`)
       .then(res => res.json())
-      .catch(() => []);
+      .catch(() => [
+        {
+          restaurant_id: "6317637",
+          restaurant_name: "Barbeque Nation",
+          cuisine_type: "Mughlai • North Indian",
+          location: location
+        },
+        {
+          restaurant_id: "12345",
+          restaurant_name: "The Pizza Project",
+          cuisine_type: "Italian • Fast Food",
+          location: location
+        }
+      ]);
 
     Promise.all([fetchCats, fetchRes]).then(([catData, resData]) => {
       // Ensure "Street Food" is in the list even if CSV is primarily "Mughlai/Chinese"

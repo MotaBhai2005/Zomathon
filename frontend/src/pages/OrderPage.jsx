@@ -17,7 +17,7 @@ const OrderPage = () => {
     if (cart.length > 0) {
       setLoading(true);
       const lastItem = cart[cart.length - 1];
-      
+
       // Fetching 64D Embedding recommendations from FastAPI
       fetch(`http://localhost:8000/recommend/${lastItem.item_id}`)
         .then(res => res.json())
@@ -43,18 +43,17 @@ const OrderPage = () => {
   }
 
   const handlePlaceOrder = () => {
-    // Navigate to success and clear cart
-    window.location.href = '/success';
-    // Optional: clearCart();
+    // Navigate to checkout
+    window.location.href = '/checkout';
   };
 
   return (
     <div className="pt-16 p-4 pb-44 bg-gray-50 min-h-screen font-sans">
       <div className="flex items-center space-x-2 mb-6 text-left">
-         <h2 className="text-2xl font-black tracking-tight text-gray-800 uppercase">Review Order</h2>
-         <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">Checkout</span>
+        <h2 className="text-2xl font-black tracking-tight text-gray-800 uppercase">Review Order</h2>
+        <span className="bg-red-100 text-red-600 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">Checkout</span>
       </div>
-      
+
       {/* 1. Active Cart Items with Quantity Controls */}
       <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-gray-100 mb-8">
         {cart.map(item => (
@@ -63,33 +62,33 @@ const OrderPage = () => {
               <span className="text-sm font-black text-gray-800 leading-tight">{item.name}</span>
               <span className="text-[10px] text-gray-400 font-bold mt-1 uppercase tracking-tight">₹{item.price} per unit</span>
             </div>
-            
+
             <div className="flex items-center space-x-4">
-               {/* Quantity Toggle */}
-               <div className="flex items-center bg-white border border-gray-200 rounded-xl px-2 py-1 shadow-sm">
-                  <button onClick={() => removeFromCart(item.item_id)} className="text-red-500 p-1 active:scale-125 transition-transform"><Minus size={14} strokeWidth={3}/></button>
-                  <span className="text-xs font-black px-2 text-gray-700 w-4 text-center">{item.qty}</span>
-                  <button onClick={() => addToCart(item, activeRestaurantId)} className="text-red-500 p-1 active:scale-125 transition-transform"><Plus size={14} strokeWidth={3}/></button>
-               </div>
-               <span className="text-sm font-black text-gray-700 w-16 text-right font-mono">₹{item.price * item.qty}</span>
+              {/* Quantity Toggle */}
+              <div className="flex items-center bg-white border border-gray-200 rounded-xl px-2 py-1 shadow-sm">
+                <button onClick={() => removeFromCart(item.item_id)} className="text-red-500 p-1 active:scale-125 transition-transform"><Minus size={14} strokeWidth={3} /></button>
+                <span className="text-xs font-black px-2 text-gray-700 w-4 text-center">{item.qty}</span>
+                <button onClick={() => addToCart(item, activeRestaurantId)} className="text-red-500 p-1 active:scale-125 transition-transform"><Plus size={14} strokeWidth={3} /></button>
+              </div>
+              <span className="text-sm font-black text-gray-700 w-16 text-right font-mono">₹{item.price * item.qty}</span>
             </div>
           </div>
         ))}
 
         {/* 2. Bill Summary */}
         <div className="mt-4 pt-4 border-t-2 border-dashed border-gray-100 space-y-2">
-           <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              <span>Item Total</span>
-              <span>₹{totalAmount}</span>
-           </div>
-           <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              <span>Delivery Fee</span>
-              <span>₹{deliveryFee}</span>
-           </div>
-           <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              <span>Platform Fee</span>
-              <span>₹{platformFee}</span>
-           </div>
+          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <span>Item Total</span>
+            <span>₹{totalAmount}</span>
+          </div>
+          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <span>Delivery Fee</span>
+            <span>₹{deliveryFee}</span>
+          </div>
+          <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <span>Platform Fee</span>
+            <span>₹{platformFee}</span>
+          </div>
         </div>
       </div>
 
@@ -98,7 +97,7 @@ const OrderPage = () => {
         <div className="flex justify-between items-end mb-4 px-1">
           <div className="text-left">
             <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Complete Your Meal</h4>
-            <p className="text-[9px] text-red-500 font-bold italic">Smart Suggestions based on {cart[cart.length-1]?.name}</p>
+            <p className="text-[9px] text-red-500 font-bold italic">Smart Suggestions based on {cart[cart.length - 1]?.name}</p>
           </div>
           {loading && <div className="w-3 h-3 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>}
         </div>
@@ -106,8 +105,8 @@ const OrderPage = () => {
         <div className="flex overflow-x-auto space-x-4 no-scrollbar pb-4">
           <AnimatePresence>
             {recs.map((item, index) => (
-              <motion.div 
-                key={item.item_id} 
+              <motion.div
+                key={item.item_id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
@@ -119,7 +118,7 @@ const OrderPage = () => {
                 </div>
                 <p className="text-[11px] font-black text-gray-800 truncate">{item.name}</p>
                 <p className="text-[10px] text-red-500 font-black mt-1">₹{item.price}</p>
-                <button 
+                <button
                   onClick={() => addToCart(item, activeRestaurantId)}
                   className="mt-3 w-full bg-white border-2 border-red-50 text-red-500 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-red-50 active:scale-95 transition-all shadow-sm"
                 >
@@ -133,7 +132,7 @@ const OrderPage = () => {
 
       {/* 4. Sticky Checkout Bar */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-xl border-t border-gray-50 z-50">
-        <button 
+        <button
           onClick={handlePlaceOrder}
           className="w-full bg-[#E23744] text-white py-4 rounded-[1.5rem] font-black flex justify-between px-8 shadow-2xl shadow-red-200 active:scale-[0.98] transition-transform"
         >

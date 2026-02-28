@@ -26,21 +26,8 @@ const CheckoutPage = () => {
     };
 
     if (paymentSuccess) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-green-50 px-4 text-center">
-                <CheckCircle size={80} className="text-green-500 mb-6 drop-shadow-md" />
-                <h1 className="text-2xl font-black text-gray-800 mb-2">Order Confirmed!</h1>
-                <p className="text-gray-500 mb-8 max-w-xs text-sm">
-                    Your food is being prepared by the restaurant. The delivery partner is on the way.
-                </p>
-                <button
-                    onClick={() => navigate('/')}
-                    className="bg-green-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-green-700 transition-colors w-full max-w-xs"
-                >
-                    Track Order
-                </button>
-            </div>
-        );
+        navigate('/success');
+        return null;
     }
 
     return (
@@ -80,8 +67,8 @@ const CheckoutPage = () => {
                                 key={amount}
                                 onClick={() => setTip(amount)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-bold border transition-colors ${tip === amount
-                                        ? 'border-red-500 bg-red-50 text-red-600'
-                                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                                    ? 'border-red-500 bg-red-50 text-red-600'
+                                    : 'border-gray-200 text-gray-600 hover:bg-gray-50'
                                     }`}
                             >
                                 ₹{amount}
