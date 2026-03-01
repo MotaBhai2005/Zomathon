@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Minus, Plus, ChevronRight, ShoppingBag } from 'lucide-react';
+import { getFoodImage } from '../utils/ImageHelper';
 
 const OrderPage = () => {
   const { cart, totalAmount, addToCart, removeFromCart, activeRestaurantId, clearCart } = useCart();
@@ -113,8 +114,13 @@ const OrderPage = () => {
                 whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 w-40 bg-white border border-gray-100 p-4 rounded-[2rem] shadow-sm text-left"
               >
-                <div className="h-28 bg-gray-50 rounded-2xl mb-3 flex items-center justify-center text-3xl opacity-60">
-                  {item.is_veg ? '🥗' : '🍗'}
+                <div className="h-28 bg-gray-50 rounded-2xl mb-3 overflow-hidden">
+                  <img
+                    src={getFoodImage(item.name)}
+                    className="w-full h-full object-cover"
+                    alt={item.name}
+                    onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=150&q=80"; }}
+                  />
                 </div>
                 <p className="text-[11px] font-black text-gray-800 truncate">{item.name}</p>
                 <p className="text-[10px] text-red-500 font-black mt-1">₹{item.price}</p>
