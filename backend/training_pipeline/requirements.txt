@@ -1,0 +1,16 @@
+# ==========================================
+# ZOMATHON: TRAINING PIPELINE REQUIREMENTS
+# ==========================================
+
+# 1. Data Manipulation & Matrix Operations
+pandas>=2.0.0
+numpy>=1.24.0
+
+# 2. Machine Learning & Neural Networks (Stage 1: Behavior)
+torch>=2.0.0
+transformers>=4.30.0
+sentence-transformers>=2.2.2
+scikit-learn>=1.3.0
+
+# 3. Utilities
+tqdm>=4.65.0

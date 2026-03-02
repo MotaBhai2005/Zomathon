@@ -2,16 +2,13 @@ import pandas as pd
 import numpy as np
 import random
 
-print("Loading the clean items dataset to get the restaurant data")
-old_df = pd.read_csv("clean_items.csv") #The Dataset we used to generate embeddings which failed miserably due to the dat being not upto the mark
-restaurants = old_df[['restaurant_id', 'restaurant_name', 'city', 'locality']].drop_duplicates()
+print("Loading the curated restaurant dataset...")
+res_df = pd.read_csv("restaurants.csv")
+restaurants = res_df.to_dict('records')
 
-# Confirm that there are at least 100 restaurants
-restaurants = restaurants.head(100).to_dict('records')
+print(f"Loaded {len(restaurants)} real restaurants.")
 
-print(f"Extracted {len(restaurants)} real restaurants.")
-
-#Categorizing data for better model understanding
+#Categorizing data for better model understanding 
 base_items = [
     # FAST FOOD MAINS
     {"name": "Chicken Zinger Burger", "cuisine": "Fast Food", "cat": "Fast Food Main", "veg": 0, "base_price": 250},
@@ -166,6 +163,6 @@ for res in restaurants:
 final_df = pd.DataFrame(final_menu_rows)
 
 print("3. Exporting the Master Catalog...")
-final_df.to_csv("master_items.csv", index=False)
+final_df.to_csv("items.csv", index=False)
 print(f"SUCCESS. Generated {len(final_df)} highly structured menu items across {len(restaurants)} restaurants.")
-print("Saved as 'master_items.csv'")
+print("Saved as 'items.csv'")

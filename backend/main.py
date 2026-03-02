@@ -8,7 +8,6 @@ import uvicorn
 # Import the dataframe and your advanced recommendation logic
 from model_utils import df, get_meal_completion_recs
 
-# CRITICAL FIX: Sanitize columns to avoid KeyErrors
 df.columns = [str(c).strip().lower() for c in df.columns]
 
 app = FastAPI(title="Zomathon API")
@@ -21,20 +20,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- NEW: PYDANTIC MODEL FOR FEEDBACK LOOP ---
 class InteractionLog(BaseModel):
     user_id: str
     anchor_item_id: int
     recommended_item_id: int
-    action: str  # e.g., "clicked", "added_to_cart"
+    action: str
 
-# --- NEW: FEEDBACK LOOP ENDPOINT ---
 @app.post("/log_interaction")
 async def log_interaction(log: InteractionLog):
-    """
-    Logs user behavior to drift_logs.csv. 
-    Pitch to judges: "This powers our nightly PyTorch retraining job."
-    """
     log_file = "drift_logs.csv"
     
     if not os.path.exists(log_file):
@@ -46,8 +39,6 @@ async def log_interaction(log: InteractionLog):
         f.write(f"{timestamp},{log.user_id},{log.anchor_item_id},{log.recommended_item_id},{log.action}\n")
         
     return {"status": "success"}
-
-# --- YOUR EXISTING ENDPOINTS (UNTOUCHED) ---
 
 @app.get("/restaurant/{res_id}/menu")
 async def get_menu(res_id: int):

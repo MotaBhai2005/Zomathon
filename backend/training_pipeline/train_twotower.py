@@ -137,5 +137,4 @@ final_embeddings = model.get_all_item_embeddings()
 # Save the matrix
 np.save("final_backend_embeddings.npy", final_embeddings)
 print("SUCCESS. Matrix Shape:", final_embeddings.shape)
-print("Move the'final_backend_embeddings.npy' and 'master_items.csv' to the root backend directory")
-print("Rename the 'master_items.csv' to 'items.csv'")
+print("Move the'final_backend_embeddings.npy' and 'items.csv' to the root backend directory")

@@ -6,11 +6,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 CSV_PATH = 'items.csv' 
 NPY_PATH = 'final_backend_embeddings.npy' 
 
-print("1. Loading Neural Embeddings & Catalog...")
+print("Loading Neural Embeddings & Catalog...")
 df = pd.read_csv(CSV_PATH)
 embeddings = np.load(NPY_PATH)
 
-print("2. Building the Knowledge Graph Bouncer...")
+print("Building the Knowledge Graph Bouncer...")
 def build_restaurant_graph(restaurant_id):
     G = nx.Graph()
     res_df = df[df['restaurant_id'] == restaurant_id]
@@ -24,7 +24,6 @@ def build_restaurant_graph(restaurant_id):
         G.add_edge(item_id, f"CUISINE_{row['cuisine_type']}", weight=1.0)
         G.add_edge(item_id, f"CAT_{row['category']}", weight=1.0)
 
-    # The Immutable Laws of Food (Based on the new Master Taxonomy)
     synergies = [
         ("CAT_Wet Curry", "CAT_Bread", 8.0),
         ("CAT_Wet Curry", "CAT_Starter", 3.0),
@@ -41,7 +40,6 @@ def build_restaurant_graph(restaurant_id):
         
     return G
 
-# Cache graphs in memory
 graphs = {res_id: build_restaurant_graph(res_id) for res_id in df['restaurant_id'].unique()}
 
 def get_meal_completion_recs(item_id, top_n=6):
@@ -60,10 +58,8 @@ def get_meal_completion_recs(item_id, top_n=6):
         return []
     G = graphs[res_id]
 
-    # === STAGE 1: NEURAL NETWORK RECALL ===
     sim_scores = cosine_similarity(target_vec, embeddings).flatten()
     
-    # === STAGE 2: GRAPH THEORY RE-RANKING ===
     try:
         pagerank_scores = nx.pagerank(G, personalization={int(item_id): 1.0}, weight='weight', alpha=0.85)
     except Exception:
@@ -82,17 +78,14 @@ def get_meal_completion_recs(item_id, top_n=6):
         if clean_name in seen_names:
             continue
             
-        # Cuisine Shield
         if row['cuisine_type'] != target_cuisine and row['category'] not in ['Drink', 'Dessert']:
             continue
 
         nn_score = sim_scores[i] 
         graph_score = pagerank_scores.get(current_id, 0.0) * 100 
         
-        # 60% Neural Net / 40% Graph
         final_score = (nn_score * 0.6) + (graph_score * 0.4)
         
-        # Hot vs Cold Drink Override
         if row['category'] == 'Drink':
             is_hot = any(w in clean_name for w in ['tea', 'coffee', 'hot'])
             if target_cuisine in ['Fast Food', 'Chinese'] and is_hot:

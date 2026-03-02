@@ -1,5 +1,16 @@
-fastapi
-uvicorn
-pandas
-numpy
-scikit-learn
+# ==========================================
+# ZOMATHON: BACKEND API REQUIREMENTS
+# ==========================================
+
+# 1. API & Backend
+fastapi>=0.103.0
+uvicorn[standard]>=0.23.0
+pydantic>=2.3.0
+
+# 2. Data Manipulation & Matrix Operations
+pandas>=2.0.0
+numpy>=1.24.0
+
+# 3. Graph Logic & Recommendation Utilities
+networkx>=3.1
+scikit-learn>=1.3.0
